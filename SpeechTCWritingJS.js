@@ -67,7 +67,7 @@ function start() {
 
 }
 
-function stop() {
+function stop(skip) {
     recognition.stop();
 
     if (row == 0) {
@@ -89,7 +89,11 @@ function stop() {
         tr.style.backgroundColor = '#F7F9F9';
     }
     var td = document.createElement('td');
-    td.appendChild(document.createTextNode(finalText));
+    if (skip) {
+        td.appendChild(document.createTextNode(""));
+    } else {
+        td.appendChild(document.createTextNode(finalText));
+    }
     tr.appendChild(td)
     tbdy.appendChild(tr);
     tbl.appendChild(tbdy);
@@ -104,6 +108,34 @@ function stop() {
     row++;
 }
 
+function getDateTime() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1;
+    var day = now.getDate();
+    var hour = now.getHours();
+    var minute = now.getMinutes();
+    var second = now.getSeconds();
+    if (month.toString().length == 1) {
+        month = '0' + month;
+    }
+    if (day.toString().length == 1) {
+        day = '0' + day;
+    }
+    if (hour.toString().length == 1) {
+        hour = '0' + hour;
+    }
+    if (minute.toString().length == 1) {
+        minute = '0' + minute;
+    }
+    if (second.toString().length == 1) {
+        second = '0' + second;
+    }
+    var dateTime = year + '_' + month + '_' + day + ' ' + hour + '_' + minute + '_' + second;
+    return dateTime;
+}
+
+
 function exportTableToExcel(tableID, filename = '') {
     var downloadLink;
     var dataType = 'application/vnd.ms-excel';
@@ -111,7 +143,7 @@ function exportTableToExcel(tableID, filename = '') {
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
     // Specify file name
-    filename = filename ? filename + '.xls' : 'excel_data.xls';
+    filename = filename ? filename + getDateTime() + '.xls' : 'excel_data.xls';
 
     // Create download link element
     downloadLink = document.createElement("a");
@@ -133,4 +165,5 @@ function exportTableToExcel(tableID, filename = '') {
         //triggering the function
         downloadLink.click();
     }
+
 }

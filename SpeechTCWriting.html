@@ -11,11 +11,11 @@
 <body>
     <script src="SpeechTCWritingJS.js"></script>
 
-
     <div id='button'>
         <button name='click' onclick='start()'> Click me and speak </button>
-        <button name='click' onclick='stop()'> Click me to stop </button>
-        <button onclick="exportTableToExcel('TestCases', 'members-data')">Export Table Data To Excel File</button>
+        <button name='click' onclick='stop(false)'> Click me to stop </button>
+        <button name='click' onclick='stop(true)'> Click me to skip </button>
+        <button onclick="exportTableToExcel('TestCases', 'TestCases')">Export Table Data To Excel File</button>
     </div>
     <div id='text'>
     </div>
