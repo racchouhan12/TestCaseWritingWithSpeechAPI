@@ -90,9 +90,27 @@ function stop(skip) {
     }
     var td = document.createElement('td');
     if (skip) {
-        td.appendChild(document.createTextNode(""));
+        td.appendChild(document.createTextNode(" "));
+        td.appendChild(document.createElement("br"));
     } else {
-        td.appendChild(document.createTextNode(finalText));
+        //var str = "step 1 howewj step 2 tyft gyg step 3 this hjs udj"
+        var res = finalText.split(/step\D+/);
+        console.log(res.length);
+        if (res.length <= 1) {
+            res = finalText;
+            var div = document.createElement('div');
+            var divText = document.createTextNode(res);
+            div.appendChild(divText);
+            td.appendChild(div);
+        } else {
+            for (i = 1; i < res.length; i++) {
+                var div = document.createElement('div');
+                var divText = document.createTextNode('Step: ' + res[i]);
+                div.appendChild(divText);
+                td.appendChild(div);
+            }
+        }
+        //td.appendChild(document.createTextNode(finalText));
     }
     tr.appendChild(td)
     tbdy.appendChild(tr);
