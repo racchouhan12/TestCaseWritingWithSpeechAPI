@@ -1,6 +1,7 @@
 var body = document.getElementsByTagName('body')[0];
 var orderArrayHeader = ["ID", "Test Case name", "Steps", "Expected Result"];
 var rowColor = 0;
+var finalText = '';
 var tr;
 var row = 0;
 var columns = 0;
@@ -17,7 +18,7 @@ for (var i = 0; i < orderArrayHeader.length; i++) {
     thead.appendChild(document.createElement("th")).
     appendChild(document.createTextNode(orderArrayHeader[i]));
 }
-var finalText = '';
+
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 let finalTranscript = '';
 let recognition = new window.SpeechRecognition();
@@ -48,8 +49,9 @@ function start() {
     recognition.start();
 
     recognition.interimResults = true;
-    recognition.maxAlternatives = 10;
+    recognition.maxAlternatives = 20;
     recognition.continuous = true;
+    var j = 0;
     recognition.onresult = (event) => {
         let interimTranscript = '';
         for (let i = event.resultIndex, len = event.results.length; i < len; i++) {
@@ -63,22 +65,42 @@ function start() {
         document.getElementById('text').innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</>';
         finalText = finalTranscript;
 
+        /*  if (finalText.toLowerCase() == 'move to next column') {
+             console.log('Inside move to');
+             stop(false);
+         } */
+        console.log('outside move to');
+        if (j <= event.results.length) {
+            splitOperation(finalText);
+            j = event.resultIndex;
+        }
+        j++;
     }
+
 
 }
 
-function stop(skip) {
+function splitOperation(finaltextToSplit) {
+    var result = finaltextToSplit.split(/move to next column/);
+    var len = result.length;
+    if ('move to next column' == result[len - 1]) {
+        stop(false, result[0]);
+    } else {
+        console.log(result);
+        stop(false, result[0]);
+    }
+}
+
+function stop(skip, finalTextToBeWritten) {
     recognition.stop();
 
     if (row == 0) {
-        console.log('Inside row === 0');
         tr = document.createElement('tr');
         tr.style.color = '#000000';
         rowColor = 0;
     }
 
     if (columns == 4) {
-        console.log('Inside col');
         tr = document.createElement('tr');
         tr.style.color = '#000000';
         rowColor = rowColor == 0 ? 1 : 0;
@@ -93,11 +115,10 @@ function stop(skip) {
         td.appendChild(document.createTextNode(" "));
         td.appendChild(document.createElement("br"));
     } else {
-        //var str = "step 1 howewj step 2 tyft gyg step 3 this hjs udj"
-        var res = finalText.split(/step\D+/);
+        var res = finalTextToBeWritten.split(/step\D+/);
         console.log(res.length);
         if (res.length <= 1) {
-            res = finalText;
+            res = finalTextToBeWritten;
             var div = document.createElement('div');
             var divText = document.createTextNode(res);
             div.appendChild(divText);
@@ -121,7 +142,6 @@ function stop(skip) {
         row = 0;
         columns = 0;
     }
-    console.log(row + ',' + columns);
     columns++;
     row++;
 }
