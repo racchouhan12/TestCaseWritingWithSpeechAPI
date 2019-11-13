@@ -5,7 +5,6 @@ function welcomeUserAndAskThemToThinkOfColumnNames() {
 
 function captureColumnNames() {
     speak('Please tell the column names');
-
 }
 
 function speak(text, callback) {
