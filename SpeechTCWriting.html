@@ -11,6 +11,16 @@
 <body>
     <script src="SpeechTCWritingJS.js"></script>
 
+    <div id='nameOfUser'>
+        <b>Enter your name:&nbsp;&nbsp;</b>
+        <input type='text' id='userTextName' />
+        <button id='submitYourName' onclick='welcomeUserAndAskThemToThinkOfColumnNames()'>Continue..</button>
+    </div>
+
+    <div id='captureColumnNames'>
+        <button id='captureColumnNames' onclick='start(true)'>Capture Column Names</button>
+    </div>
+
     <div id='button'>
         <button name='click' onclick='start()'> Click me and speak </button>
         <button name='click' onclick='stop(false)'> Click me to stop </button>

@@ -1,31 +1,33 @@
 var body = document.getElementsByTagName('body')[0];
-var orderArrayHeader = ["ID", "Test Case name", "Steps", "Expected Result"];
 var rowColor = 0;
 var tr;
 var row = 0;
 var columns = 0;
+var noOfColumns = 0;
 var tbl = document.createElement('table');
 tbl.style.width = '100%';
 tbl.setAttribute('border-collapse', 'collapse');
 tbl.setAttribute('id', 'TestCases');
 var tbdy = document.createElement('tbody');
-var thead = document.createElement('thead');
-thead.style.backgroundColor = "#28B463";
-thead.style.color = "#FBFCFC";
-tbl.appendChild(thead);
-for (var i = 0; i < orderArrayHeader.length; i++) {
-    thead.appendChild(document.createElement("th")).
-    appendChild(document.createTextNode(orderArrayHeader[i]));
-}
 var finalText = '';
+var userName = '';
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 let finalTranscript = '';
 let recognition = new window.SpeechRecognition();
 
+function welcomeUserAndAskThemToThinkOfColumnNames() {
+    userName = document.getElementById('userTextName').value;
+    if (userName === '') {
+        speak('Please enter your name or username');
+    } else {
+        speak('Welcome' + userName + '!, Please be ready with column names you want for your test cases. Click on "Capture Column Names" button when you are ready.');
+    }
+}
+
 function speak(text, callback) {
     var u = new SpeechSynthesisUtterance();
     u.text = text;
-    u.lang = 'en-UK';
+    u.lang = 'en-US';
     u.onend = function() {
         if (callback) {
             callback();
@@ -40,7 +42,7 @@ function speak(text, callback) {
     speechSynthesis.speak(u);
 }
 
-function start() {
+function start(isHeader = false) {
 
     var localText = '';
     finalTranscript = localText;
@@ -62,7 +64,20 @@ function start() {
         }
         document.getElementById('text').innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</>';
         finalText = finalTranscript;
-
+        if (isHeader) {
+            var localOrderArrayHeader = finalText.split(',');
+            noOfColumns = localOrderArrayHeader.length;
+            console.log(localOrderArrayHeader);
+            var thead = document.createElement('thead');
+            thead.style.backgroundColor = "#28B463";
+            thead.style.color = "#FBFCFC";
+            tbl.appendChild(thead);
+            for (var i = 0; i < localOrderArrayHeader.length; i++) {
+                thead.appendChild(document.createElement("th")).
+                appendChild(document.createTextNode(localOrderArrayHeader[i]));
+            }
+            body.appendChild(tbl);
+        }
     }
 
 }
@@ -77,7 +92,7 @@ function stop(skip) {
         rowColor = 0;
     }
 
-    if (columns == 4) {
+    if (columns == noOfColumns) {
         console.log('Inside col');
         tr = document.createElement('tr');
         tr.style.color = '#000000';
@@ -93,7 +108,6 @@ function stop(skip) {
         td.appendChild(document.createTextNode(" "));
         td.appendChild(document.createElement("br"));
     } else {
-        //var str = "step 1 howewj step 2 tyft gyg step 3 this hjs udj"
         var res = finalText.split(/step\D+/);
         console.log(res.length);
         if (res.length <= 1) {
@@ -110,14 +124,14 @@ function stop(skip) {
                 td.appendChild(div);
             }
         }
-        //td.appendChild(document.createTextNode(finalText));
+
     }
     tr.appendChild(td)
     tbdy.appendChild(tr);
     tbl.appendChild(tbdy);
     body.appendChild(tbl)
 
-    if (columns == 4) {
+    if (columns == noOfColumns) {
         row = 0;
         columns = 0;
     }
@@ -161,7 +175,7 @@ function exportTableToExcel(tableID, filename = '') {
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
     // Specify file name
-    filename = filename ? filename + getDateTime() + '.xls' : 'excel_data.xls';
+    filename = filename ? userName.trim() + '_' + filename + getDateTime() + '.xls' : userName.trim() + '_' + 'excel_data.xls';
 
     // Create download link element
     downloadLink = document.createElement("a");
