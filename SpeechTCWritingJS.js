@@ -20,7 +20,8 @@ function welcomeUserAndAskThemToThinkOfColumnNames() {
     if (userName === '') {
         speak('Please enter your name or username');
     } else {
-        speak('Welcome' + userName + '!, Please be ready with column names you want for your test cases. Click on "Capture Column Names" button when you are ready.');
+        speak('Welcome' + userName + '!, Please be ready with column names you want for your test cases. Click on "Mic" button when you are ready.');
+        hideWelcomeUser();
     }
 }
 
