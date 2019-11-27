@@ -66,6 +66,7 @@ function start(isHeader = false) {
         document.getElementById('text').innerHTML = finalTranscript + '<i style="color:#ddd;">' + interimTranscript + '</>';
         finalText = finalTranscript;
         if (isHeader) {
+            finalText = finalText.replace('best', 'test');
             var localOrderArrayHeader = finalText.split(',');
             noOfColumns = localOrderArrayHeader.length;
             console.log(localOrderArrayHeader);
